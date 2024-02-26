@@ -1,16 +1,9 @@
-version: '3'
+version: '3.8'
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: ./backend/Dockerfile
-      target: backend
-    ports:
-      - "5001:5001"
-    volumes:
-      - ./backend:/app/backend
-
   database:
+    container_name: database-container
+    networks:
+      - connect-database
     build:
       context: .
       dockerfile: ./Dockerfile
@@ -20,12 +13,29 @@ services:
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
+  backend:
+    networks:
+      - connect-database
+    depends_on:
+      - database
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+      target: backend
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./backend:/app/backend
+
   frontend:
     build:
-      context: .
-      dockerfile: ./frontend/Dockerfile
-      target: frontend
+      context: ./frontend
+      dockerfile: ./Dockerfile
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app/frontend
+
+networks:
+  connect-database:
+    driver: bridge
+
+

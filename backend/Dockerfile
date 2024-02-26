@@ -1,4 +1,4 @@
-FROM node:21-alpine3.18 AS backend
+FROM node:20.11 AS backend
 
 WORKDIR /app/backend
 COPY package*.json ./
@@ -10,4 +10,6 @@ ENV NODE_ENV=local
 
 EXPOSE 5001
 
-CMD ["yarn", "start"]
+CMD yarn migrate; \
+    yarn start;
+

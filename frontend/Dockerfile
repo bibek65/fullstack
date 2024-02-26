@@ -1,12 +1,15 @@
-FROM node:21-alpine3.18 as frontend
+FROM node:20.11 as frontend
+
 
 WORKDIR /app/frontend
 
-COPY package*.json ./
+COPY package.json yarn.lock ./
 
 RUN yarn
+
 COPY . .
 
 EXPOSE 3000
 
 CMD ["yarn", "dev"]
+
